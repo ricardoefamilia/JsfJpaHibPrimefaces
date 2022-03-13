@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>JSFJPAHibPrimefaces</title>
+	<style>
+		.semBorda tr, .semBorda td { border: none !important; }
+	</style>
+</h:head>
+<h:body>
+	<!-- menu primefaces -->
+	<h:form>
+		<p:breadCrumb>
+			<p:menuitem />
+			<p:menuitem value="Página de Entrada" action="index.jsf" />
+			<p:menuitem value="Página Primefaces" action="primefaces.jsf" />
+			<p:menuitem value="Página Funcionário"
+				action="primefacesFuncionario.jsf" />
+		</p:breadCrumb>
+	</h:form>
+
+	<h2>Cadastro</h2>
+	<h:form id="formCadastro">
+		<!--<p:messages showDetail="true" autoUpdate="true" />-->
+		<p:growl autoUpdate="true" showDetail="true" />
+		<p:panelGrid columns="2" styleClass="semBorda">
+			<p:outputLabel>Id:</p:outputLabel>
+			<p:inputText readonly="true"
+				value="#{funcionarioManagedBean.funcionario.id}" />
+			<p:outputLabel>Nome:</p:outputLabel>
+			<p:inputText value="#{funcionarioManagedBean.funcionario.nome}"
+				id="nome" required="true" requiredMessage="Digite o nome completo.">
+				<p:watermark value="Nome Completo" for="nome"></p:watermark>
+			</p:inputText>
+			<p:outputLabel>Cargo:</p:outputLabel>
+			<p:inputText value="#{funcionarioManagedBean.funcionario.cargo}"
+				required="true" requiredMessage="Digite o cargo." />
+			<p:outputLabel>Sexo:</p:outputLabel>
+			<p:selectOneMenu value="#{funcionarioManagedBean.funcionario.sexo}">
+				<f:selectItem itemValue="Masculino" itemLabel="Masculino" />
+				<f:selectItem itemValue="Feminino" itemLabel="Feminino" />
+			</p:selectOneMenu>
+			<p:outputLabel>Dt. Admissão:</p:outputLabel>
+			<p:datePicker
+				value="#{funcionarioManagedBean.funcionario.dtAdmissao}"
+				locale="pt_BR" showButtonPanel="true" required="true">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</p:datePicker>
+
+			<p:outputLabel>Salário:</p:outputLabel>
+			<p:inputText value="#{funcionarioManagedBean.funcionario.salario}"
+				required="true" requiredMessage="Digite o salário." />
+		</p:panelGrid>
+		<p:panelGrid columns="3" styleClass="semBorda">
+			<p:commandButton style="background-color: green" value="Salvar"
+				ajax="false" actionListener="#{funcionarioManagedBean.salvar}" />
+			<p:commandButton style="background-color: red" value="Excluir"
+				ajax="false" action="#{funcionarioManagedBean.excluir}" />
+			<p:commandButton value="Limpar" immediate="true"
+				action="#{funcionarioManagedBean.limpar}">
+				<f:ajax execute="@this" render="@form" />
+			</p:commandButton>
+		</p:panelGrid>
+		<br />
+	</h:form>
+	<h:form id="formTabela">
+		<p:dataTable value="#{funcionarioManagedBean.listaFuncionarios}"
+			var="f">
+			<f:facet name="header">Lista de Funcionários Cadastrados</f:facet>
+			<p:column headerText="Matrícula">
+				<p:outputLabel value="#{f.id}" />
+			</p:column>
+			<p:column headerText="Nome">
+				<p:outputLabel value="#{f.nome}" />
+			</p:column>
+			<p:column headerText="Cargo">
+				<h:outputText value="#{f.cargo}" />
+			</p:column>
+			<p:column headerText="Sexo">
+				<h:outputText value="#{f.sexo}" />
+			</p:column>
+			<p:column headerText="Dt Admissão">
+				<h:outputText value="#{f.dtAdmissao}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			<p:column headerText="Salário">
+				<h:outputText value="#{f.salario}" />
+			</p:column>
+			<p:column headerText="Editar">
+				<p:commandLink immediate="true" id="btEditar2">
+					<p:graphicImage url="resources/img/edit2.png" width="32" />
+					<f:setPropertyActionListener value="#{f}"
+						target="#{funcionarioManagedBean.funcionario}" />
+					<f:ajax execute="btEditar2" render=":formCadastro" />
+				</p:commandLink>
+			</p:column>
+			<p:column headerText="Excluir">
+				<p:commandLink action="#{funcionarioManagedBean.excluir}"
+					id="btExcluir2" immediate="true">
+					<p:graphicImage url="resources/img/delete3.png" width="32" />
+					<f:setPropertyActionListener value="#{f}"
+						target="#{funcionarioManagedBean.funcionario}" />
+					<f:ajax execute="btExcluir2" render="@form" />
+				</p:commandLink>
+			</p:column>
+			<p:column headerText="Telefone">
+				<!-- update sai do formTabela para pegar os dados no dialogTelefone -->
+				<!-- PF() função do Primefaces -->
+				<p:commandLink update=":formTabela:dialogTelefone" immediate="true"
+					oncomplete="PF('dialogTelefone').show()">
+					<f:setPropertyActionListener value="#{f}"
+						target="#{funcionarioManagedBean.funcionario}" />
+					<p:graphicImage width="32" height="32" url="resources/img/fone.png" />
+				</p:commandLink>
+			</p:column>
+		</p:dataTable>
+
+		<p:dialog header="Telefones" id="dialogTelefone"
+			widgetVar="dialogTelefone" position="center" modal="true"
+			width="470px" resizable="false">
+			<p:panelGrid columns="2" styleClass="semBorda">
+				<p:outputLabel>Telefone:</p:outputLabel>
+				<p:inputText value="#{funcionarioManagedBean.telefone.numero}" id="fone"					
+					required="true" requiredMessage="Digite o número do telefone.">
+					<p:watermark value="(xx)xxxxx-xxxx" for="fone"></p:watermark>
+				</p:inputText>
+				<p:outputLabel>Tipo Telefone:</p:outputLabel>
+				<p:selectOneMenu value="#{funcionarioManagedBean.telefone.tipo}" id="tipoF">
+					<f:selectItem itemValue="Celular" itemLabel="Celular" />
+					<f:selectItem itemValue="Residencial" itemLabel="Residencial" />
+					<f:selectItem itemValue="Trabalho" itemLabel="Trabalho" />
+				</p:selectOneMenu>
+				
+				<!-- actionListener - envia os dados para o backend (ajax=true) e retorna
+				     sem dar refresh na tela -->
+				<p:commandButton value="Salvar" 
+					actionListener="#{funcionarioManagedBean.inserirTelefone}"
+					update="fone,tipoF,dataTableFone">
+				</p:commandButton>	
+			</p:panelGrid>
+			<br />
+			<p:dataTable value="#{funcionarioManagedBean.funcionario.telefones}"
+				var="telef" id="dataTableFone">
+				<p:column headerText="Código" width="50">
+					<p:outputLabel value="#{telef.id}" />
+				</p:column>
+
+				<p:column headerText="Número">
+					<p:outputLabel value="#{telef.numero}" />
+				</p:column>
+
+				<p:column headerText="Tipo">
+					<p:outputLabel value="#{telef.tipo}" />
+				</p:column>
+				
+				<p:column headerText="Excluir">
+					<h:commandLink id="btExcluirFone"
+						  actionListener="#{funcionarioManagedBean.excluirTelefone}">
+						<f:param name="codigoTel" value="#{telef.id}"/>
+						<f:ajax execute="btExcluirFone" render="dataTableFone"/>
+						<h:graphicImage width="28" height="28" 
+							url="resources/img/delete3.png"/>
+					</h:commandLink>
+				</p:column>
+			</p:dataTable>
+		</p:dialog>
+
+	</h:form>
+	<br />
+	<br />
+	<p:chart type="bar" model="#{funcionarioManagedBean.bcm}" />
+	<br />
+	<br />
+</h:body>
+</html>

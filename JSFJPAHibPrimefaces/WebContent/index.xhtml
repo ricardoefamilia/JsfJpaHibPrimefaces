@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>JSFJPAHibPrimefaces</title>
+</h:head>
+<h:body>	
+	<!-- menu primefaces -->
+	<h:form>
+		<p:breadCrumb>
+			<p:menuitem />
+			<p:menuitem value="Página de Entrada" action="index.jsf" />
+			<p:menuitem value="Página Primefaces" action="primefaces.jsf" />
+		</p:breadCrumb>
+	</h:form>
+
+	<h2>Cadastro</h2>
+	<h:form id="formCadPessoa">
+		<h:messages showDetail="true" showSummary="false" id="msg"
+			style="color: blue; list-style: none; padding-left: 10px;" />
+		<h:panelGrid columns="2">
+			<h:outputLabel>Id:</h:outputLabel>
+			<h:inputText readonly="true" value="#{pessoaManagedBean.pessoa.id}" />
+			<h:outputLabel>Nome:</h:outputLabel>
+			<h:inputText value="#{pessoaManagedBean.pessoa.nome}" 
+				required="true" pt:placeholder = "Nome completo"
+				requiredMessage="Digite seu nome" />
+			<h:outputLabel>Idade:</h:outputLabel>
+			<h:inputText value="#{pessoaManagedBean.pessoa.idade}" />
+			<h:outputLabel>E-Mail:</h:outputLabel>
+			<h:inputText value="#{pessoaManagedBean.pessoa.email}" pt:placeholder = "email@email.com" />
+			<h:outputLabel>Usuário:</h:outputLabel>
+			<h:inputText value="#{pessoaManagedBean.pessoa.login}" />
+			<h:outputLabel>Senha:</h:outputLabel>
+			<h:inputSecret id="senha" value="#{pessoaManagedBean.pessoa.senha}" />
+			<h:outputLabel value="Conf. Senha:" />
+			<h:inputSecret id="senha2" />
+			<h:outputLabel>Sexo:</h:outputLabel>
+			<h:selectOneMenu value="#{pessoaManagedBean.pessoa.sexo}">
+				<f:selectItem itemValue="Masculino" />
+				<f:selectItem itemValue="Feminino" />
+			</h:selectOneMenu>
+			<h:outputLabel value="CEP:" />
+			<h:inputText value="#{pessoaManagedBean.pessoa.cep}">
+				<f:ajax event="blur" execute="@this"
+					listener="#{pessoaManagedBean.pesquisaCep}"
+					render="logradouro complemento bairro localidade uf" />
+			</h:inputText>
+
+			<h:outputLabel value="Logradouro:" />
+			<h:inputText id="logradouro"
+				value="#{pessoaManagedBean.pessoa.logradouro}" />
+
+			<h:outputLabel value="Número:" />
+			<h:inputText id="numero"
+				value="#{pessoaManagedBean.pessoa.nr}" />
+
+			<h:outputLabel value="Complemento:" />
+			<h:inputText id="complemento"
+				value="#{pessoaManagedBean.pessoa.complemento}" />
+
+			<h:outputLabel value="Bairro:" />
+			<h:inputText id="bairro"
+				value="#{pessoaManagedBean.pessoa.bairro}" />
+
+			<h:outputLabel value="Cidade:" />
+			<h:inputText id="localidade"
+				value="#{pessoaManagedBean.pessoa.localidade}" />
+
+			<h:outputLabel value="UF:" />
+			<h:inputText id="uf" value="#{pessoaManagedBean.pessoa.uf}" />			
+		</h:panelGrid>
+		<h:panelGrid columns="3">
+			<h:commandButton value="Salvar" action="#{pessoaManagedBean.salvar}" />
+			<h:commandButton value="Excluir"
+				action="#{pessoaManagedBean.excluir}" />
+			<h:commandButton value="Limpar" action="#{pessoaManagedBean.limpar}" />
+		</h:panelGrid>
+	</h:form>
+	<br />
+	<br />
+	<h:form id="formPessoas">
+		<h:dataTable value="#{pessoaManagedBean.lista}" var="p"
+			cellpadding="10" border="1" cellspacing="0">
+			<f:facet name="header">Lista de Pessoas Cadastradas</f:facet>
+			<h:column>
+				<f:facet name="header">Matrícula</f:facet>
+				<h:outputText value="#{p.id}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Nome</f:facet>
+				<h:outputText value="#{p.nome}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Sexo</f:facet>
+				<h:outputText value="#{p.sexo}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Idade</f:facet>
+				<h:outputText value="#{p.idade}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">E-Mail</f:facet>
+				<h:outputText value="#{p.email}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Login</f:facet>
+				<h:outputText value="#{p.login}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Endereço</f:facet>
+				<h:outputText value="#{p.logradouro} " /> 
+				<h:outputText value="#{p.nr} " /> 
+				<h:outputText value="#{p.complemento}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Bairro</f:facet>
+				<h:outputText value="#{p.bairro}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Cidade</f:facet>
+				<h:outputText value="#{p.localidade}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">UF</f:facet>
+				<h:outputText value="#{p.uf}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">CEP</f:facet>
+				<h:outputText value="#{p.cep}" />
+			</h:column>
+			<h:column>
+				<f:facet name="header">Depend.</f:facet>
+				<h:commandLink immediate="true"
+					action="cadDependente.jsf" style="text-align: center;">
+					<h:graphicImage url="resources/img/dependente.png" width="42" />
+					<f:param name="idPessoa" value="#{p.id}"/>
+				</h:commandLink>
+			</h:column>
+			<h:column>
+				<f:facet name="header">Editar</f:facet>
+				<h:commandLink immediate="true" id="btEditar">
+					<h:graphicImage url="resources/img/edit2.png" width="32" />
+					<f:setPropertyActionListener value="#{p}"
+						target="#{pessoaManagedBean.pessoa}" />
+					<f:ajax execute="btEditar" render=":formCadPessoa" />
+				</h:commandLink>
+			</h:column>
+			<h:column>
+				<f:facet name="header">Excluir</f:facet>
+				<h:commandLink immediate="true" id="btExcluir"
+					action="#{pessoaManagedBean.excluir}" style="text-align: center;">
+					<h:graphicImage url="resources/img/delete3.png" width="32" />
+					<f:setPropertyActionListener value="#{p}"
+						target="#{pessoaManagedBean.pessoa}" />
+					<f:ajax execute="btExcluir" render="@form :formCadPessoa:msg" />
+				</h:commandLink>
+			</h:column>
+		</h:dataTable>
+	</h:form>
+</h:body>
+</html>

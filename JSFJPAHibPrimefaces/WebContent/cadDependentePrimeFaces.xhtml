@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>JSFJPAHibPrimefaces</title>
+</h:head>
+<h:body>
+	<!-- menu primefaces -->
+	<h:form>
+		<p:breadCrumb>
+			<p:menuitem />
+			<p:menuitem value="Página de Entrada" action="index.jsf" />
+			<p:menuitem value="Página Primefaces" action="primefaces.jsf" />
+		</p:breadCrumb>
+	</h:form>
+	<h:form id="formCadDependente">
+		<p:messages showDetail="true" showSummary="false" id="msg" autoUpdate="true"
+			style="color: blue; list-style: none; padding-left: 10px;" />
+		<h2>Cadastro de Dependentes</h2>
+		<p:panelGrid columns="2">
+			<p:outputLabel>Titular: </p:outputLabel>
+			<p:outputLabel value="#{dependenteManagedBean.pessoa.nome}"
+				style="color: blue;" />
+
+			<p:outputLabel>Id:</p:outputLabel>
+			<p:inputText readonly="true"
+				value="#{dependenteManagedBean.dependente.id}" />
+			<p:outputLabel>Nome:</p:outputLabel>
+			<p:inputText
+				value="#{dependenteManagedBean.dependente.nomeDependente}"
+				required="true" requiredMessage="Digite seu nome" />
+			<p:outputLabel>Grau Parentesco:</p:outputLabel>
+			<p:inputText
+				value="#{dependenteManagedBean.dependente.grauParentesco}" />
+			<p:outputLabel>Idade:</p:outputLabel>
+			<p:inputText value="#{dependenteManagedBean.dependente.idade}" />
+			<p:outputLabel>Sexo:</p:outputLabel>
+			<h:selectOneMenu value="#{dependenteManagedBean.dependente.sexo}">
+				<f:selectItem itemValue="Masculino" />
+				<f:selectItem itemValue="Feminino" />
+			</h:selectOneMenu>
+		</p:panelGrid>
+		<p:panelGrid columns="3">
+			<p:commandButton value="Salvar" ajax="false"
+				action="#{dependenteManagedBean.salvar}" />
+			<p:commandButton value="Excluir" ajax="false"
+				action="#{dependenteManagedBean.excluir}" />
+			<p:commandButton value="Limpar" ajax="false"
+				action="#{dependenteManagedBean.limpar}" />
+		</p:panelGrid>
+	</h:form>
+	<br />
+	<h:form id="formDependentes">
+		<br />
+		<p:dataTable value="#{dependenteManagedBean.pessoa.dependentes}"
+			var="d" cellpadding="15" border="1" cellspacing="0">
+			<f:facet name="header">Lista de Dependentes Cadastrados</f:facet>
+			<p:column headerText="Código">
+				<p:outputLabel value="#{d.id}" />
+			</p:column>
+			<p:column headerText="Dependente">
+				<p:outputLabel value="#{d.nomeDependente}" required="true" 
+					requiredMessage="Preencha o nome completo do Dependente"/>
+			</p:column>
+			<p:column headerText="Grau Par.">
+				<p:outputLabel value="#{d.grauParentesco}" required="true" 
+					requiredMessage="Preencha o grau parentesco do Dependente"/>
+			</p:column>
+			<p:outputLabel>Sexo:</p:outputLabel>
+			<p:selectOneMenu value="#{d.sexo}">
+				<f:selectItem itemValue="Masculino" itemLabel="Masculino" />
+				<f:selectItem itemValue="Feminino" itemLabel="Feminino" />
+			</p:selectOneMenu>
+			<p:column headerText="Idade">
+				<p:outputLabel value="#{d.idade}" />
+			</p:column>
+			<p:column headerText="Editar">
+				<p:commandLink immediate="true" id="btEditar2">
+					<p:graphicImage url="resources/img/edit2.png" width="32"/>
+					<f:setPropertyActionListener value="#{d}"
+						target="#{dependenteManagedBean.dependente}" />
+					<f:ajax execute="btEditar2" render=":formCadDependente"/>
+				</p:commandLink>
+			</p:column>
+			<p:column headerText="Excluir">
+				<p:commandLink immediate="true" id="btExcluir"
+					action="#{dependenteManagedBean.excluir}"
+					style="text-align: center;">
+					<p:graphicImage url="resources/img/delete3.png" width="32" />
+					<f:setPropertyActionListener value="#{d}"
+						target="#{dependenteManagedBean.dependente}" />
+					<f:ajax execute="btExcluir" render="@form" />
+				</p:commandLink>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+	<script>
+		function validaSenhas() {
+			var senha1 = document.getElementById("formPessoa:senha").value;
+			var senha2 = document.getElementById("formPessoa:senha2").value;
+			senha1 = senha1.trim();
+			senha2 = senha2.trim();
+			var tipoUsuario = document.getElementById("tipoUsuario");
+
+			if (senha1 != senha2 || senha2 === "") {
+				alert("Preencha corretamente a senha e a confirmação da senha.");
+				return false;
+			}
+		}
+	</script>
+</h:body>
+</html>

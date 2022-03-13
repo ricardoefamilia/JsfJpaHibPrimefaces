@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pt="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>JSFJPAHibPrimefaces</title>
+	<style>
+		.semBorda tr, .semBorda td { border: none !important; }
+	</style>
+</h:head>
+<h:body>
+	<!-- menu primefaces -->
+	<h:form>
+		<p:breadCrumb>
+			<p:menuitem />
+			<p:menuitem value="Página de Entrada" action="index.jsf"/>
+			<p:menuitem value="Página Primefaces" action="primefaces.jsf"/>
+			<p:menuitem value="Página Funcionário" action="primefacesFuncionario.jsf"/>
+		</p:breadCrumb>	
+	</h:form>
+	
+	<h2>Cadastro</h2>
+	<h:form id="formCadastro">
+		<p:messages showDetail="true" autoUpdate="true"
+			style="color: blue; list-style: none; padding-left: 10px;" />
+		<p:panelGrid columns="2" styleClass="semBorda">
+			<p:outputLabel>Id:</p:outputLabel>
+			<p:inputText readonly="true" value="#{pessoaManagedBean.pessoa.id}"/>
+			<p:outputLabel>Nome:</p:outputLabel> 
+			<p:inputText value="#{pessoaManagedBean.pessoa.nome}" id="nome"
+				required="true" requiredMessage="Digite o nome completo." >
+				<p:watermark value="Nome Completo" for="nome"></p:watermark>
+			</p:inputText>
+			<p:outputLabel>Idade:</p:outputLabel>
+			<p:inputText value="#{pessoaManagedBean.pessoa.idade}" required="true" requiredMessage="Digite a idade." />
+			<p:outputLabel>E-Mail:</p:outputLabel>
+			<p:inputText value="#{pessoaManagedBean.pessoa.email}" pt:placeholder = "email@email.com"
+				required="true" requiredMessage="Digite o e-mail." />
+			<p:outputLabel>Usuário:</p:outputLabel>
+			<p:inputText value="#{pessoaManagedBean.pessoa.login}" 
+				required="true" requiredMessage="Digite o usuário." />
+			<p:outputLabel>Senha:</p:outputLabel>
+			<p:password value="#{pessoaManagedBean.pessoa.senha}" 
+				required="true" requiredMessage="Digite a senha."/>
+			<p:outputLabel>Sexo:</p:outputLabel>
+			<p:selectOneMenu value="#{pessoaManagedBean.pessoa.sexo}">
+				<f:selectItem itemValue="Masculino" itemLabel="Masculino" />
+				<f:selectItem itemValue="Feminino" itemLabel="Feminino" />
+			</p:selectOneMenu>
+			<p:outputLabel value="CEP:" />
+			<p:inputText value="#{pessoaManagedBean.pessoa.cep}" 
+				required="true" requiredMessage="Digite o CEP.">
+				<f:ajax event="blur" execute="@this"
+					listener="#{pessoaManagedBean.pesquisaCep}"
+					render="logradouro complemento bairro localidade uf" />
+			</p:inputText>
+
+			<p:outputLabel value="Logradouro:" />
+			<p:inputText id="logradouro"
+				value="#{pessoaManagedBean.pessoa.logradouro}" />
+
+			<p:outputLabel value="Número:" />
+			<p:inputText id="numero"
+				value="#{pessoaManagedBean.pessoa.nr}" />
+
+			<p:outputLabel value="Complemento:" />
+			<p:inputText id="complemento"
+				value="#{pessoaManagedBean.pessoa.complemento}" />
+
+			<p:outputLabel value="Bairro:" />
+			<p:inputText id="bairro"
+				value="#{pessoaManagedBean.pessoa.bairro}" />
+
+			<p:outputLabel value="Cidade:" />
+			<p:inputText id="localidade"
+				value="#{pessoaManagedBean.pessoa.localidade}" />
+
+			<p:outputLabel value="UF:" />
+			<p:inputText id="uf" value="#{pessoaManagedBean.pessoa.uf}" />
+		</p:panelGrid>
+		<p:panelGrid columns="3" styleClass="semBorda">
+			<p:commandButton style="background-color: green" value="Salvar"
+			       ajax="false" actionListener="#{pessoaManagedBean.salvar}"/>
+			<p:commandButton style="background-color: red" value="Excluir" 
+			       ajax="false" action="#{pessoaManagedBean.excluir}"/>
+			<p:commandButton value="Limpar" immediate="true" action="#{pessoaManagedBean.limpar}">
+				<f:ajax execute="@this" render="@form" />
+			</p:commandButton>
+		</p:panelGrid>
+		<br />
+		</h:form>
+		<h:form id="formTabela">
+		<p:dataTable value="#{pessoaManagedBean.listaPessoas}" var="p" >
+			<f:facet name="header">Lista de Pessoas Cadastradas</f:facet>
+			<p:column headerText="Matrícula">
+				<p:outputLabel value="#{p.id}"/>
+			</p:column>
+			<p:column headerText="Nome">
+				<p:outputLabel value="#{p.nome}"/>
+			</p:column>
+			<p:column headerText="Sexo">
+				<h:outputText value="#{p.sexo}"/>
+			</p:column>
+			<p:column headerText="Idade">
+				<h:outputText value="#{p.idade}"/>
+			</p:column>
+			<p:column headerText="E-Mail">
+				<h:outputText value="#{p.email}"/>
+			</p:column>
+			<p:column headerText="Login">
+				<h:outputText value="#{p.login}"/>
+			</p:column>
+			<p:column headerText="Endereço"> 
+				<p:outputLabel value="#{p.logradouro} " />  
+				<p:outputLabel value="#{p.nr} " /> 
+				<p:outputLabel value="#{p.complemento}" />
+			</p:column>
+			<p:column headerText="Bairro">
+				<p:outputLabel value="#{p.bairro}" />
+			</p:column>
+			<p:column headerText="Cidade">
+				<p:outputLabel value="#{p.localidade}" />
+			</p:column>
+			<p:column headerText="UF">
+				<p:outputLabel value="#{p.uf}" />
+			</p:column>
+			<p:column headerText="CEP">
+				<p:outputLabel value="#{p.cep}" />
+			</p:column>
+			<p:column headerText="Dependentes">
+				<p:commandLink immediate="true" action="cadDependentePrimeFaces.jsf" 
+					style="text-align: center;">
+					<p:graphicImage url="resources/img/dependente.png" width="42" />
+					<f:param name="idPessoa" value="#{p.id}"/>
+				</p:commandLink>
+			</p:column>
+			<p:column headerText="Editar">
+				<p:commandLink immediate="true" id="btEditar2">
+					<p:graphicImage url="resources/img/edit2.png" width="32"/>
+					<f:setPropertyActionListener value="#{p}" 
+						target="#{pessoaManagedBean.pessoa}" />
+					<f:ajax execute="btEditar2" render=":formCadastro"/>
+				</p:commandLink>
+			</p:column>
+			<p:column headerText="Excluir">
+				<p:commandLink action="#{pessoaManagedBean.excluir}" 
+					id="btExcluir2" immediate="true">
+					<p:graphicImage url="resources/img/delete3.png" width="32"/>
+					<f:setPropertyActionListener value="#{p}" 
+						target="#{pessoaManagedBean.pessoa}" />
+					<f:ajax execute="btExcluir2" render="@form"/>
+				</p:commandLink>
+			</p:column>
+		</p:dataTable>
+	</h:form>
+</h:body>
+</html>
